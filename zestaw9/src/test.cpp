@@ -46,11 +46,11 @@ void Test::testPop() {
 }
 
 void Test::runTests() {
-    std::cout<<"Uruchamianie testów..."<<std::endl;
+    std::cout << "Uruchamianie testów..." << std::endl;
     testCopyConstructor();
     testMoveConstructor();
     testTop();
     testPush();
     testPop();
-    std::cout<<"Testy zakończone pomyślnie!"<<std::endl;
+    std::cout << "Testy zakończone pomyślnie!" << std::endl;
 }

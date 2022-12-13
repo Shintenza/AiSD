@@ -71,7 +71,7 @@ template <typename T>
 bool MyPriorityQueue<T>::equals(std::initializer_list<T> other) {
     int queueSize = size();
 
-    if (other.size() != (long unsigned int) queueSize) {
+    if (other.size() != (long unsigned int)queueSize) {
         return false;
     }
 
@@ -99,7 +99,7 @@ bool MyPriorityQueue<T>::equals(std::initializer_list<T> other) {
 }
 template <typename T>
 bool MyPriorityQueue<T>::equals_raw(std::initializer_list<T> other) {
-    if (other.size() != (long unsigned int) heap.size())
+    if (other.size() != (long unsigned int)heap.size())
         return false;
     T *heapTab = heap.getTab();
     int i = 0;

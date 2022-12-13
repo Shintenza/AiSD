@@ -95,7 +95,7 @@ template <typename T>
 bool MyPriorityQueue<T>::equals(std::initializer_list<T> other) {
     int queueSize = size();
 
-    if (other.size() != (long unsigned int) queueSize) {
+    if (other.size() != (long unsigned int)queueSize) {
         return false;
     }
 
@@ -125,13 +125,12 @@ bool MyPriorityQueue<T>::equals(std::initializer_list<T> other) {
 
 template <typename T>
 bool MyPriorityQueue<T>::equals_raw(std::initializer_list<T> other) {
-    if (other.size() != (long unsigned int) lst.size())
+    if (other.size() != (long unsigned int)lst.size())
         return false;
 
     int i = 0;
     for (T el : other) {
         if (lst.at(i) != el) {
-
             return false;
         }
         i++;

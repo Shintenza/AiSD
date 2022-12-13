@@ -28,7 +28,7 @@ class Heap {
     int size() const { return last; }
     void clear();
     T &front() const { return tab[0]; }
-    T *getTab() const{ return tab; }
+    T *getTab() const { return tab; }
 };
 
 template <typename T>
@@ -76,14 +76,17 @@ void Heap<T>::shiftUp(int i) {
 template <typename T>
 void Heap<T>::shiftDown(int i) {
     int maxIndex = i;
+
     int left = leftChild(i);
     if (left <= last - 1 && tab[left] > tab[maxIndex]) {
         maxIndex = left;
     }
+
     int right = rightChild(i);
     if (right <= last - 1 && tab[right] > tab[maxIndex]) {
         maxIndex = right;
     }
+
     if (i != maxIndex) {
         std::swap(tab[i], tab[maxIndex]);
         shiftDown(maxIndex);

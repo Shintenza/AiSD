@@ -1,7 +1,7 @@
 #ifndef TEST_H
 #define TEST_H
-#include "my_priority_queue.h"
-// #include "heap_priority_queue.h"
+// #include "my_priority_queue.h"
+#include "heap_priority_queue.h"
 
 class Test {
     MyPriorityQueue<int> testingPriorityQueue;
@@ -10,7 +10,8 @@ class Test {
     void testTop();
     void testPush();
     void testPop();
-public:
+
+  public:
     Test();
     void runTests();
 };
