@@ -153,7 +153,6 @@ bool MyDeque<T>::equals(std::initializer_list<T> other) {
     if (other.size() != (long unsigned int) this->size())
         return false;
     T* givenArray = new T[other.size()];
-    int i = 0;
     int j = 0;
     for (T el : other) {
         givenArray[i] = el;

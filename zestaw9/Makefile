@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -std=c++11
 
-NAME = zestaw8
+NAME = zestaw9
 OBJ_DIR = obj
 SRC_DIR = src
 BIN_DIR = bin
@@ -12,7 +12,7 @@ BINARIES = $(addprefix $(BIN_DIR)/, $(OUT))
 DEPS = test
 DEPS_OBJ = $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(DEPS)))
 DEPS_INC = $(addprefix $(INC_DIR)/, $(addsuffix .h, $(DEPS)))
-TEMPLATES = myqueue test forward_list_queue
+TEMPLATES = test my_priority_queue heap_priority_queue heap
 TEMPLATES_INC = $(addprefix $(INC_DIR)/, $(addsuffix .h, $(TEMPLATES)))
 
 .PRECIOUS: $(OBJ_DIR)/%.o

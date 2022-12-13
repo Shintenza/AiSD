@@ -8,6 +8,7 @@ class MyQueue {
     std::forward_list<int> list;
     int msize;
     int length;
+
   public:
     MyQueue(int s = 10) : msize(s), length(0) {}; // default constructor
     ~MyQueue() { list.clear(); }
@@ -117,7 +118,7 @@ bool MyQueue<T>::equals(std::initializer_list<T> other) {
         return false;
     auto pos = list.begin();
     for (T el : other) {
-        if (el != *pos) 
+        if (el != *pos)
             return false;
         ++pos;
     }
