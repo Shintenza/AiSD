@@ -25,7 +25,8 @@ public:
 
 public:
     AVLTree() : root(nullptr) {}
-    ~AVLTree() { clear(); } // trzeba wyczyscic
+    AVLTree(AVLTree &other);
+    // ~AVLTree() { clear(); } // trzeba wyczyscic
     bool empty() const { return root == nullptr; }
     T &top() {
         assert(root != nullptr);
@@ -49,24 +50,28 @@ public:
         clear(root);
         root = nullptr;
     }
+
     void display() { display(root, 0); }
+    // testing
+    bool equals(std::initializer_list<T> other);
 
     virtual void visit(AVLNode<T> *node) {
         assert(node != nullptr);
-        std::cout << "visiting " << node->value << std::endl;
+        std::cout << "visiting " << node->value <<" node address: "<<node << " node parent: "<< node->parent<< std::endl;
     }
 
 private:
-    AVLNode<T> *remove(AVLNode<T> *node);
     AVLNode<T> *rotateLeft(AVLNode<T> *a);
     AVLNode<T> *rotateRight(AVLNode<T> *a);
     AVLNode<T> *rotateLeftThenRight(AVLNode<T> *n);
     AVLNode<T> *rotateRightThenLeft(AVLNode<T> *n);
     AVLNode<T> *search(AVLNode<T> *node, const T &item) const;
+    AVLNode<T> *deep_copy(AVLNode<T> *node);
 
     T *find_min(AVLNode<T> *node) const;
     T *find_max(AVLNode<T> *node) const;
 
+    void preorder_testing(AVLNode<T> *node, std::vector<T> &v);
     void clear(AVLNode<T> *node);
     void rebalance(AVLNode<T> *n);
     int height(AVLNode<T> *n);
@@ -76,65 +81,28 @@ private:
     void inorder(AVLNode<T> *node);
     void preorder(AVLNode<T> *node);
     void postorder(AVLNode<T> *node);
+
 };
 
 template <typename T>
-void AVLTree<T>::remove(const T &item) { // usuwanie przez złączanie
-    AVLNode<T> *node = root;
-    AVLNode<T> *prev = nullptr;
-    while (node != nullptr) {
-        if (node->value == item)
-            break;
-        prev = node;
-        if (item < node->value) {
-            node = node->left;
-        } else {
-            node = node->right;
-        }
-    }
-    // Szukamy przyczyny przerwania pętli while.
-    if (node != nullptr && node->value == item) {
-        // node ma być usunięty.
-        if (node == root) {
-            root = remove(node);
-            rebalance(root);
-        } else if (prev->left == node) {
-            prev->left = remove(node);
-            rebalance(prev);
-        } else {
-            prev->right = remove(node);
-            rebalance(prev);
-        }
-    } else if (root != nullptr) {
-        ;    // klucza nie znaleziono
-    } else { // root == nullptr
-        ;    // drzewo jest puste
-    }
+AVLTree<T>::AVLTree(AVLTree<T> &other) {
+    this->root = deep_copy(other.root);
 }
-
 template <typename T>
-AVLNode<T> *AVLTree<T>::remove(AVLNode<T> *node) {
-    // Mamy usunąć węzeł i zwrócić nowy korzeń poddrzewa.
-    assert(node != nullptr);
-    AVLNode<T> *new_root;
-    if (node->right == nullptr) { // node nie ma prawego dziecka
-        new_root = node->left;
-    } else if (node->left == nullptr) { // node nie ma lewego dziecka
-        new_root = node->right;
-    } else {                             // obecne lewe i prawe dziecko
-        new_root = node;                 // zapisujemy stary korzeń
-        node = node->left;               // idziemy w lewo
-        while (node->right != nullptr) { // idziemy w prawo do końca
-            node = node->right;
-        }
-        node->right = new_root->right; // prawe poddrzewo przełączone
-        node->right->parent = node;
-        node = new_root;       // węzeł do usunięcia
-        new_root = node->left; // nowy korzeń
-        new_root->parent = node->parent;
-    }
-    delete node;
-    return new_root;
+AVLNode<T>* AVLTree<T>::deep_copy(AVLNode<T> *node) {
+    if (node == nullptr) return nullptr;
+
+    AVLNode<T> *newNode = new AVLNode<T>(node->value);
+    newNode->balance = node->balance;
+
+    newNode->left = deep_copy(node->left);
+    if (newNode->left != nullptr)
+        newNode->left->parent = newNode;
+    newNode->right = deep_copy(node->right);
+    if (newNode->right != nullptr) 
+        newNode->right->parent = newNode;
+
+    return newNode;
 }
 
 template <typename T>
@@ -164,14 +132,15 @@ void AVLTree<T>::insert(const T &item) {
 
 template <typename T>
 void AVLTree<T>::bfs() {
-    if (root == nullptr) return;
-    std::queue<AVLNode<T>*> nodesQueue; 
+    if (root == nullptr)
+        return;
+    std::queue<AVLNode<T> *> nodesQueue;
     AVLNode<T> *node = root;
     nodesQueue.push(node);
 
     while (!nodesQueue.empty()) {
         node = nodesQueue.front();
-        nodesQueue.pop();      
+        nodesQueue.pop();
         visit(node);
         if (node->left != nullptr)
             nodesQueue.push(node->left);
@@ -277,6 +246,46 @@ T *AVLTree<T>::find_max(AVLNode<T> *node) const {
     return &node->value;
 }
 
+template <class T>
+void AVLTree<T>::remove(const T &item) {
+    if (root == nullptr)
+        return;
+
+    AVLNode<T>
+        *node       = root,
+        *parent  = root,
+        *delNode = NULL,
+        *child   = root;
+
+    while (child != NULL) {
+        parent = node;
+        node = child;
+        child = item >= node->value ? node->right : node->left;
+        if (item == node->value)
+            delNode = node;
+    }
+
+    if (delNode != NULL) {
+        delNode->value = node->value;
+
+        child = node->value != NULL ? node->left : node->right;
+
+        if (root->value == item) {
+            root = child;
+        }
+        else {
+            if (parent->left == node) {
+                parent->left = child;
+            }
+            else {
+                parent->right = child;
+            }
+
+            rebalance(parent);
+        }
+    }
+}
+
 template <typename T>
 void AVLTree<T>::rebalance(AVLNode<T> *node) {
     setBalance(node);
@@ -322,6 +331,32 @@ void AVLTree<T>::display(AVLNode<T> *node, int level) {
     std::cout << std::string(3 * level, ' ') << node->value << "(" << node->balance << ")" << std::endl;
     display(node->left, level + 1);
 }
+template <typename T>
+bool AVLTree<T>::equals(std::initializer_list<T> other) {
+    std::vector<T> storage;
+
+    preorder_testing(root, storage);
+
+    if (storage.size() != other.size())
+        return false;
+
+    int i = 0;
+    for (T el : other) {
+        if (el != storage.at(i))
+            return false;
+        i++;
+    }
+    return true;
+}
+
+template <typename T>
+void AVLTree<T>::preorder_testing(AVLNode<T> *node, std::vector<T> &v) {
+    if (node == nullptr)
+        return;
+    v.push_back(node->value);
+    preorder_testing(node->left, v);
+    preorder_testing(node->right, v);
+}
 
 template <typename T>
 void AVLTree<T>::inorder(AVLNode<T> *node) {
@@ -329,7 +364,7 @@ void AVLTree<T>::inorder(AVLNode<T> *node) {
         return;
     inorder(node->left);
     visit(node);
-    inorder();
+    inorder(node->right);
 }
 
 template <typename T>
@@ -343,7 +378,8 @@ void AVLTree<T>::preorder(AVLNode<T> *node) {
 
 template <typename T>
 void AVLTree<T>::postorder(AVLNode<T> *node) {
-    if (node == nullptr) return;
+    if (node == nullptr)
+        return;
     postorder(node->left);
     postorder(node->right);
     visit(node);
