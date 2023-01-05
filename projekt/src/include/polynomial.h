@@ -18,7 +18,7 @@ public:
     Poly(Term<T> firstTerm);
     Poly(SingleList<Term<T>> &termList);
     Poly(std::initializer_list<T> coefficients, std::initializer_list<T> powers);
-    ~Poly(){};
+    ~Poly() { clear(); };
     Poly(const Poly &other);
     Poly(Poly &&other);
 
