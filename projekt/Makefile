@@ -1,7 +1,7 @@
 CC = g++
-CFLAGS = -Wall -std=c++11 -g
+CFLAGS = -Wall -std=c++11
 
-NAME = zestaw12
+NAME = projekt
 OBJ_DIR = obj
 SRC_DIR = src
 BIN_DIR = bin
@@ -16,7 +16,7 @@ TEMPLATES = polynomial singlelist polynomial_term
 TEMPLATES_INC = $(addprefix $(INC_DIR)/, $(addsuffix .h, $(TEMPLATES)))
 
 .PRECIOUS: $(OBJ_DIR)/%.o
-.PHONY: clean all structure run
+.PHONY: clean all run
 all: $(BINARIES)
 
 $(BIN_DIR)/%: $(OBJ_DIR)/%.o $(DEPS_OBJ) | structure

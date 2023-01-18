@@ -1,31 +1,31 @@
 #ifndef SINGLELIST_H
 #define SINGLELIST_H
 
+#include "polynomial_term.h"
 #include <cassert>  // assert()
 #include <iostream> // deklaracje strumieni cout, cin, cerr
-#include "polynomial_term.h"
 
-template <typename T>
-class SingleList;
+template <typename T> class SingleList;
 
-template <typename T>
-class SingleNode {
+template <typename T> class SingleNode {
 private:
     T value;
     SingleNode *next;
     SingleNode() : value(T()), next(nullptr) {} // konstruktor domyslny
-    SingleNode(const T &item, SingleNode *ptr = nullptr) : value(item), next(ptr) {}
+    SingleNode(const T &item, SingleNode *ptr = nullptr)
+        : value(item), next(ptr) {}
     ~SingleNode() {} // destruktor
     friend class SingleList<T>;
+
 public:
     T *getNodeValue() { return &value; };
     SingleNode<T> *getNextNode() const { return next; };
 };
 
-template <typename T>
-class SingleList {
+template <typename T> class SingleList {
     SingleNode<T> *head, *tail;
     int length;
+
 public:
     SingleList() : head(nullptr), tail(nullptr), length(0) {}
     ~SingleList();                       // tu trzeba wyczyscic wezly
@@ -33,39 +33,42 @@ public:
     // usage:   SingleList<int> list2(list1);
     SingleList(SingleList &&other); // move constructor NIEOBOWIAZKOWE
     // usage:   SingleList<int> list2(std::move(list1));
-    SingleList &operator=(const SingleList &other); // copy assignment operator, return *this
+    SingleList &operator=(
+        const SingleList &other); // copy assignment operator, return *this
     // usage:   list2 = list1;
-    SingleList &operator=(SingleList &&other); // move assignment operator, return *this
+    SingleList &
+    operator=(SingleList &&other); // move assignment operator, return *this
     // usage:   list2 = std::move(list1); NIEOBOWIAZKOWE
     bool empty() const { return head == nullptr; }
     int size() const { return length; } // O(n) bo trzeba policzyc
     void push_front(const T &item);     // O(1), L.push_front(item)
-    void push_front(T &&item);          // O(1), L.push_front(std::move(item)) NIEOBOWIAZKOWE
-    void push_back(const T &item);      // O(1), L.push_back(item)
-    void push_back(T &&item);           // O(1), L.push_back(std::move(item)) NIEOBOWIAZKOWE
-    void add_in_order(const T &term);         // exclusive for polynomials
-    T &front() const;                   // zwraca poczatek, nie usuwa
-    T &back() const;                    // zwraca koniec, nie usuwa
-    void pop_front();                   // usuwa poczatek O(1)
-    void pop_back();                    // usuwa koniec O(n)
-    void clear();                       // czyszczenie listy z elementow O(n)
-    void display();                     // O(n)
-    void reverse();                     // O(n)
+    void
+    push_front(T &&item); // O(1), L.push_front(std::move(item)) NIEOBOWIAZKOWE
+    void push_back(const T &item); // O(1), L.push_back(item)
+    void
+    push_back(T &&item); // O(1), L.push_back(std::move(item)) NIEOBOWIAZKOWE
+    void add_in_order(const T &term); // exclusive for polynomials
+    T &front() const;                 // zwraca poczatek, nie usuwa
+    T &back() const;                  // zwraca koniec, nie usuwa
+    void pop_front();                 // usuwa poczatek O(1)
+    void pop_back();                  // usuwa koniec O(n)
+    void clear();                     // czyszczenie listy z elementow O(n)
+    void display();                   // O(n)
+    void reverse();                   // O(n)
     // Operacje z indeksami. NIEOBOWIAZKOWE
     T &operator[](int pos);             // podstawienie L[pos]=item
     const T &operator[](int pos) const; // odczyt L[pos]
     void erase(int pos);
-    int index(const T &item);            // jaki index na liscie (-1 gdy nie ma) O(n)
+    int index(const T &item); // jaki index na liscie (-1 gdy nie ma) O(n)
     void insert(int pos, const T &item); // inserts item before pos,
     void insert(int pos, T &&item);      // inserts item before pos,
     // Jezeli pos=0, to wstawiamy na poczatek.
     // Jezeli pos=size(), to wstawiamy na koniec.
     bool equals(std::initializer_list<T> other);
-    SingleNode<T>* getHead() const { return head; }
+    SingleNode<T> *getHead() const { return head; }
 };
 
-template <typename T>
-SingleList<T>::~SingleList() {
+template <typename T> SingleList<T>::~SingleList() {
     // I sposob.
     for (SingleNode<T> *node; !empty();) {
         node = head->next; // zapamietujemy
@@ -163,8 +166,7 @@ SingleList<T> &SingleList<T>::operator=(SingleList &&other) {
     other.length = 0;
     return *this;
 }
-template <typename T>
-void SingleList<T>::push_front(const T &item) {
+template <typename T> void SingleList<T>::push_front(const T &item) {
     if (!empty()) {
         head = new SingleNode<T>(item, head);
     } else {
@@ -172,8 +174,7 @@ void SingleList<T>::push_front(const T &item) {
     }
     length++;
 }
-template <typename T>
-void SingleList<T>::push_front(T &&item) {
+template <typename T> void SingleList<T>::push_front(T &&item) {
     if (!empty()) {
         head = new SingleNode<T>(std::move(item), head);
     } else {
@@ -182,8 +183,7 @@ void SingleList<T>::push_front(T &&item) {
     length++;
 }
 
-template <typename T>
-void SingleList<T>::push_back(const T &item) {
+template <typename T> void SingleList<T>::push_back(const T &item) {
     if (!empty()) {
         tail->next = new SingleNode<T>(item);
         tail = tail->next;
@@ -192,8 +192,7 @@ void SingleList<T>::push_back(const T &item) {
     }
     length++;
 }
-template <typename T>
-void SingleList<T>::add_in_order(const T &term) {
+template <typename T> void SingleList<T>::add_in_order(const T &term) {
     if (empty()) {
         head = tail = new SingleNode<T>(term);
         length++;
@@ -205,10 +204,12 @@ void SingleList<T>::add_in_order(const T &term) {
     SingleNode<T> *tmp = node->next;
 
     if (size() == 1 && givenTermPower == node->value.getPower()) {
-        node->getNodeValue()->setCoefficient(term.getCoefficient() + node->getNodeValue()->getCoefficient());
+        node->getNodeValue()->setCoefficient(
+            term.getCoefficient() + node->getNodeValue()->getCoefficient());
         return;
     }
-    if ((size() == 1 && givenTermPower > node->value.getPower()) || givenTermPower > node->value.getPower()) {
+    if ((size() == 1 && givenTermPower > node->value.getPower()) ||
+        givenTermPower > node->value.getPower()) {
         push_front(term);
         return;
     }
@@ -217,17 +218,21 @@ void SingleList<T>::add_in_order(const T &term) {
         return;
     }
 
-    while (node->next != nullptr && givenTermPower < node->next->value.getPower()) {
+    while (node->next != nullptr &&
+           givenTermPower < node->next->value.getPower()) {
         node = node->next;
     }
 
-    if (node->next == nullptr && node->getNodeValue()->getPower() != givenTermPower) {
+    if (node->next == nullptr &&
+        node->getNodeValue()->getPower() != givenTermPower) {
         push_back(term);
         return;
-    } 
+    }
 
     if (node->next->getNodeValue()->getPower() == givenTermPower) {
-        node->next->value.setCoefficient(node->next->getNodeValue()->getCoefficient() + term.getCoefficient());
+        node->next->value.setCoefficient(
+            node->next->getNodeValue()->getCoefficient() +
+            term.getCoefficient());
     } else {
         tmp = node->next;
         node->next = new SingleNode<T>(term);
@@ -235,8 +240,7 @@ void SingleList<T>::add_in_order(const T &term) {
         length++;
     }
 }
-template <typename T>
-void SingleList<T>::push_back(T &&item) {
+template <typename T> void SingleList<T>::push_back(T &&item) {
     if (!empty()) {
         tail->next = new SingleNode<T>(std::move(item));
         tail = tail->next;
@@ -245,18 +249,15 @@ void SingleList<T>::push_back(T &&item) {
     }
     length++;
 }
-template <typename T>
-T &SingleList<T>::front() const {
+template <typename T> T &SingleList<T>::front() const {
     assert(length != 0 && head != nullptr);
     return head->value;
 }
-template <typename T>
-T &SingleList<T>::back() const {
+template <typename T> T &SingleList<T>::back() const {
     assert(length != 0 && tail != nullptr);
     return tail->value;
 }
-template <typename T>
-void SingleList<T>::display() {
+template <typename T> void SingleList<T>::display() {
     SingleNode<T> *node = head;
     while (node != nullptr) {
         std::cout << node->value << " ";
@@ -265,8 +266,7 @@ void SingleList<T>::display() {
     std::cout << std::endl;
 }
 
-template <typename T>
-void SingleList<T>::pop_front() {
+template <typename T> void SingleList<T>::pop_front() {
     assert(!empty());
     SingleNode<T> *node = head; // zapamietujemy
     if (head == tail) {         // jeden wezel na liscie
@@ -278,8 +278,7 @@ void SingleList<T>::pop_front() {
     length--;
 }
 
-template <typename T>
-void SingleList<T>::pop_back() {
+template <typename T> void SingleList<T>::pop_back() {
     assert(!empty());
     SingleNode<T> *node = tail; // zapamietujemy
     if (head == tail) {         // jeden wezel na liscie
@@ -296,8 +295,7 @@ void SingleList<T>::pop_back() {
     delete node;
     length--;
 }
-template <typename T>
-void SingleList<T>::clear() {
+template <typename T> void SingleList<T>::clear() {
     if (length == 0)
         return;
     SingleNode<T> *node = head;
@@ -309,8 +307,7 @@ void SingleList<T>::clear() {
     head = tail = nullptr;
     length = 0;
 }
-template <typename T>
-void SingleList<T>::reverse() {
+template <typename T> void SingleList<T>::reverse() {
     if (length <= 1)
         return;
     SingleNode<T> *before = nullptr;
@@ -325,8 +322,7 @@ void SingleList<T>::reverse() {
     }
     std::swap(head, tail);
 }
-template <typename T>
-T &SingleList<T>::operator[](int pos) {
+template <typename T> T &SingleList<T>::operator[](int pos) {
     assert(pos < size());
     int i = 0;
     SingleNode<T> *node = head;
@@ -336,8 +332,7 @@ T &SingleList<T>::operator[](int pos) {
     }
     return node->value;
 }
-template <typename T>
-const T &SingleList<T>::operator[](int pos) const {
+template <typename T> const T &SingleList<T>::operator[](int pos) const {
     assert(pos < length);
     int i = 0;
     SingleNode<T> *node = head;
@@ -347,8 +342,7 @@ const T &SingleList<T>::operator[](int pos) const {
     }
     return node->value;
 }
-template <typename T>
-void SingleList<T>::erase(int pos) {
+template <typename T> void SingleList<T>::erase(int pos) {
     assert(pos >= 0 && pos < length);
     if (pos == 0) {
         pop_front();
@@ -370,8 +364,7 @@ void SingleList<T>::erase(int pos) {
     delete tmp;
     length--;
 }
-template <typename T>
-int SingleList<T>::index(const T &item) {
+template <typename T> int SingleList<T>::index(const T &item) {
     int i = 0;
     SingleNode<T> *node = head;
     while (node != nullptr) {
@@ -382,8 +375,7 @@ int SingleList<T>::index(const T &item) {
     }
     return -1;
 }
-template <typename T>
-void SingleList<T>::insert(int pos, const T &item) {
+template <typename T> void SingleList<T>::insert(int pos, const T &item) {
     assert(pos <= length);
     if (pos == 0) {
         push_front(item);
@@ -405,8 +397,7 @@ void SingleList<T>::insert(int pos, const T &item) {
     node->next = new SingleNode<T>(item, tmp);
     length++;
 }
-template <typename T>
-void SingleList<T>::insert(int pos, T &&item) {
+template <typename T> void SingleList<T>::insert(int pos, T &&item) {
     assert(pos <= length);
     if (pos == 0) {
         push_front(item);

@@ -51,9 +51,11 @@ void Test::testSubtraction() {
     Poly<int> t4({1, 2, 3, 4}, {10, 9, 8, 7});
     Poly<int> t5({1, 2, 3, 4}, {5, 4, 3, 2});
     Poly<int> r3 = t4 - t5;
-    assert(r3.validate({1, 2, 3, 4, -1, -2, -3, -4}, {10, 9, 8, 7, 5, 4, 3, 2}));
+    assert(
+        r3.validate({1, 2, 3, 4, -1, -2, -3, -4}, {10, 9, 8, 7, 5, 4, 3, 2}));
     r3 = t5 - t4;
-    assert(r3.validate({-1, -2, -3, -4, 1, 2, 3, 4}, {10, 9, 8, 7, 5, 4, 3, 2}));
+    assert(
+        r3.validate({-1, -2, -3, -4, 1, 2, 3, 4}, {10, 9, 8, 7, 5, 4, 3, 2}));
 }
 
 void Test::testMultiplication() {
@@ -94,4 +96,5 @@ void Test::runTests() {
     testSubtraction();
     testMultiplication();
     testValueAt();
+    testEquals();
 }

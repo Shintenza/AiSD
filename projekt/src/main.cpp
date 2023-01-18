@@ -1,6 +1,6 @@
 #include "include/test.h"
 
-int main () {
+int main() {
     Test test;
     test.runTests();
     return 0;

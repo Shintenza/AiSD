@@ -10,6 +10,7 @@ private:
     void testMultiplication();
     void testValueAt();
     void testEquals();
+
 public:
     void runTests();
 };
